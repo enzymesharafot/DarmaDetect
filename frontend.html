@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarmaDetect - AI Skin Disease Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        input {
+            margin-bottom: 10px;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .preview {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .loading {
+            display: none;
+            font-size: 16px;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        #result {
+            font-size: 18px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>DarmaDetect - AI Skin Disease Detection</h2>
+    
+    <div class="container">
+        <input type="file" id="fileInput" accept="image/*" onchange="previewImage()">
+        <br>
+        <img id="imagePreview" class="preview" style="display:none;" />
+        <br>
+        <button onclick="uploadImage()">Upload & Predict</button>
+        <p class="loading" id="loadingText">Processing...</p>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        function previewImage() {
+            const fileInput = document.getElementById("fileInput");
+            const imagePreview = document.getElementById("imagePreview");
+
+            if (fileInput.files.length) {
+                const file = fileInput.files[0];
+                imagePreview.src = URL.createObjectURL(file);
+                imagePreview.style.display = "block";
+            }
+        }
+
+        async function uploadImage() {
+            const fileInput = document.getElementById("fileInput");
+            const loadingText = document.getElementById("loadingText");
+            const resultText = document.getElementById("result");
+
+            if (!fileInput.files.length) {
+                alert("Please select an image");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            loadingText.style.display = "block";
+            resultText.innerText = "";
+
+            try {
+                let response = await fetch("http://127.0.0.1:8000/prediction/", {
+                    method: "POST",
+                    body: formData
+                });
+
+                let result = await response.json();
+                resultText.innerText = "Prediction: " + (result["Predicted Disease"] || "Unknown");
+
+            } catch (error) {
+                resultText.innerText = "Error: Unable to process the image";
+            } finally {
+                loadingText.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
