@@ -1,0 +1,30 @@
+# requirements.txt for DarmaDetect Backend
+
+# Web framework
+fastapi==0.110.1
+uvicorn==0.27.1
+
+# Machine Learning & Deep Learning
+torch
+torchvision
+torchaudio
+numpy
+pillow
+opencv-python
+pydantic
+scipy
+
+# FastAPI Dependencies
+fastapi
+pydantic
+uvicorn
+python-multipart
+
+# Image Processing
+pillow
+opencv-python-headless
+
+# Additional Utilities
+requests
+python-multipart
+pydantic[email]
